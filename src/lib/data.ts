@@ -107,27 +107,39 @@ export interface Project {
   link?: string;
   featured: boolean;
   status?: string;
+  image?: string;
 }
 
 export const projects: Project[] = [
+  {
+    title: 'DineSync',
+    description: 'A comprehensive SaaS hotel and restaurant management platform that synchronizes every table, order, and analytical insight in real-time. Designed with modern branding and deployed live.',
+    tags: ['Next.js', 'Firebase', 'SVG Branding', 'Real-time Analytics'],
+    link: 'https://dinesync-app.web.app/',
+    featured: true,
+    image: '/dinesync_cover.png',
+  },
   {
     title: 'AI Reel Factory',
     description: 'AI-powered automated reel generation system — generates short-form content automatically using AI voice, scripts, automated video workflows, and social media content pipelines.',
     tags: ['AI Agents', 'Video Gen', 'n8n', 'Automation'],
     featured: true,
     status: 'Working On',
+    image: '/reel_factory_cover.png',
   },
   {
     title: 'WhatsApp AI Agent',
     description: 'Intelligent WhatsApp automation system capable of auto replies, AI conversations, lead handling, and business workflow automation via WhatsApp Business API.',
     tags: ['WhatsApp API', 'AI Agent', 'NLP', 'CRM'],
     featured: true,
+    image: '/whatsapp_agent_cover.png',
   },
   {
     title: 'Gmail Automation Agent',
     description: 'Workflow system that sends automatic emails, handles smart replies, automates notifications, and connects with AI workflows for intelligent email management.',
     tags: ['Gmail API', 'n8n', 'AI', 'Email Automation'],
     featured: true,
+    image: '/gmail_agent_cover.png',
   },
   {
     title: 'AI Workflow Systems',

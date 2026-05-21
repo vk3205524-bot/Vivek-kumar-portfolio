@@ -46,6 +46,17 @@ export default function Projects() {
                   )}
                 </div>
 
+                {project.image && (
+                  <div className="relative aspect-video w-full overflow-hidden rounded-xl mb-5 border border-white/10 group-hover:border-cyber-cyan/30 transition-all duration-300">
+                    <img 
+                      src={project.image} 
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                  </div>
+                )}
+
                 <h3 className="heading-md text-white mb-3 group-hover:text-cyber-cyan transition-colors">
                   {project.title}
                 </h3>

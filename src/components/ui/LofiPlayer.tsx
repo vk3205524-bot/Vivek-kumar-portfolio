@@ -23,61 +23,69 @@ export default function LofiPlayer() {
       setIsMuted(initialVolume === 0);
     }
 
-    // Initialize HTML5 Audio
-    const audio = new Audio('/audio/lofi-ambient.mp3');
-    audio.loop = true;
-    audio.volume = initialVolume;
-    audio.muted = initialVolume === 0;
-    audioRef.current = audio;
     setIsReady(true);
 
-    const handleAutoPlay = () => {
-      if (savedPlayState === 'false') {
-        // User explicitly paused it in a previous session, do not force play
-        return;
-      }
-      
-      audio.play()
-        .then(() => {
-          setIsPlaying(true);
-          removeInteractionListeners();
-        })
-        .catch((err) => {
-          // Autoplay blocked by browser policy, keep listeners active
-          console.log('Autoplay blocked. Audio will play on first interaction.', err);
-        });
-    };
+    // Give React a frame to mount the audio element before we access the ref
+    const timer = setTimeout(() => {
+      const audio = audioRef.current;
+      if (!audio) return;
 
-    const removeInteractionListeners = () => {
-      window.removeEventListener('click', handleAutoPlay);
-      window.removeEventListener('scroll', handleAutoPlay);
-      window.removeEventListener('touchstart', handleAutoPlay);
-      window.removeEventListener('keydown', handleAutoPlay);
-    };
+      // Apply initial settings to DOM element
+      audio.volume = initialVolume;
+      audio.muted = initialVolume === 0;
 
-    // Try playing immediately
-    handleAutoPlay();
+      const handleAutoPlay = () => {
+        if (savedPlayState === 'false') {
+          // User explicitly paused it in a previous session, do not force play
+          return;
+        }
+        
+        audio.play()
+          .then(() => {
+            setIsPlaying(true);
+            removeInteractionListeners();
+          })
+          .catch((err) => {
+            // Autoplay blocked by browser policy, keep listeners active
+            console.log('Autoplay blocked. Audio will play on first interaction.', err);
+          });
+      };
 
-    // Set up listeners for the first interaction to bypass autoplay policy
-    window.addEventListener('click', handleAutoPlay, { passive: true });
-    window.addEventListener('scroll', handleAutoPlay, { passive: true });
-    window.addEventListener('touchstart', handleAutoPlay, { passive: true });
-    window.addEventListener('keydown', handleAutoPlay, { passive: true });
+      const removeInteractionListeners = () => {
+        window.removeEventListener('click', handleAutoPlay);
+        window.removeEventListener('scroll', handleAutoPlay);
+        window.removeEventListener('touchstart', handleAutoPlay);
+        window.removeEventListener('keydown', handleAutoPlay);
+      };
+
+      // Try playing immediately
+      handleAutoPlay();
+
+      // Set up listeners for the first interaction to bypass autoplay policy
+      window.addEventListener('click', handleAutoPlay, { passive: true });
+      window.addEventListener('scroll', handleAutoPlay, { passive: true });
+      window.addEventListener('touchstart', handleAutoPlay, { passive: true });
+      window.addEventListener('keydown', handleAutoPlay, { passive: true });
+
+      return () => {
+        removeInteractionListeners();
+      };
+    }, 100);
 
     return () => {
-      removeInteractionListeners();
-      audio.pause();
+      clearTimeout(timer);
     };
   }, []);
 
   const togglePlay = () => {
-    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    if (!audio) return;
     if (isPlaying) {
-      audioRef.current.pause();
+      audio.pause();
       setIsPlaying(false);
       localStorage.setItem('lofi-music-enabled', 'false');
     } else {
-      audioRef.current.play()
+      audio.play()
         .then(() => {
           setIsPlaying(true);
           localStorage.setItem('lofi-music-enabled', 'true');
@@ -89,9 +97,10 @@ export default function LofiPlayer() {
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
     setVolume(val);
-    if (audioRef.current) {
-      audioRef.current.volume = val;
-      audioRef.current.muted = val === 0;
+    const audio = audioRef.current;
+    if (audio) {
+      audio.volume = val;
+      audio.muted = val === 0;
     }
     setIsMuted(val === 0);
     localStorage.setItem('lofi-music-volume', val.toString());
@@ -101,16 +110,17 @@ export default function LofiPlayer() {
   };
 
   const toggleMute = () => {
-    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    if (!audio) return;
     const newMuted = !isMuted;
     setIsMuted(newMuted);
-    audioRef.current.muted = newMuted;
+    audio.muted = newMuted;
     
     if (newMuted) {
       localStorage.setItem('lofi-music-volume', '0');
     } else {
       const restoreVol = volume > 0 ? volume : 0.3;
-      audioRef.current.volume = restoreVol;
+      audio.volume = restoreVol;
       setVolume(restoreVol);
       localStorage.setItem('lofi-music-volume', restoreVol.toString());
     }
@@ -120,6 +130,14 @@ export default function LofiPlayer() {
 
   return (
     <>
+      {/* HTML5 Audio Element in DOM */}
+      <audio
+        ref={audioRef}
+        src="/audio/lofi-ambient.mp3"
+        loop
+        preload="auto"
+      />
+
       {/* Injected custom styles for visualizer bouncing animations */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes lofi-bar-bounce {
@@ -147,7 +165,7 @@ export default function LofiPlayer() {
           {/* Neon Border Glow */}
           <div className="absolute inset-0 bg-gradient-to-r from-cyber-cyan/5 to-cyber-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-          {/* Trigger Icon / CD Visualizer */}
+          {/* Trigger Play/Pause Button */}
           <button
             onClick={togglePlay}
             className="relative flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan hover:bg-cyber-cyan hover:text-black transition-all duration-300"
@@ -169,7 +187,7 @@ export default function LofiPlayer() {
 
           {/* Expanded Content Panel */}
           <div className={`flex items-center justify-between w-full transition-opacity duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-            {/* Track metadata & visualizer */}
+            {/* Track metadata */}
             <div className="flex flex-col gap-0.5 select-none overflow-hidden max-w-[120px]">
               <span className="text-[10px] font-mono tracking-widest text-cyber-cyan uppercase font-bold leading-none">
                 Lofi Ambient

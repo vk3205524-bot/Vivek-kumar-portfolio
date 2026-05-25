@@ -28,6 +28,10 @@ const Scene = dynamic(() => import('@/components/three/Scene'), {
   loading: () => null,
 });
 
+const LofiPlayer = dynamic(() => import('@/components/ui/LofiPlayer'), {
+  ssr: false,
+});
+
 export default function Home() {
   const isLoaded = useStore((s) => s.isLoaded);
   const setActiveSection = useStore((s) => s.setActiveSection);
@@ -69,6 +73,9 @@ export default function Home() {
 
       {/* Scroll progress bar */}
       <ScrollProgress />
+
+      {/* Lofi Background Music Player */}
+      <LofiPlayer />
 
       {/* Navigation */}
       <Navbar />

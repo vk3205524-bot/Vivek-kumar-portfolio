@@ -7,7 +7,7 @@ export default function LofiPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.3);
+  const [volume, setVolume] = useState(0.6);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
@@ -16,7 +16,7 @@ export default function LofiPlayer() {
     const savedPlayState = localStorage.getItem('lofi-music-enabled');
     const savedVolume = localStorage.getItem('lofi-music-volume');
     
-    let initialVolume = 0.3;
+    let initialVolume = 0.6;
     if (savedVolume !== null) {
       initialVolume = parseFloat(savedVolume);
       setVolume(initialVolume);
@@ -119,7 +119,7 @@ export default function LofiPlayer() {
     if (newMuted) {
       localStorage.setItem('lofi-music-volume', '0');
     } else {
-      const restoreVol = volume > 0 ? volume : 0.3;
+      const restoreVol = volume > 0 ? volume : 0.6;
       audio.volume = restoreVol;
       setVolume(restoreVol);
       localStorage.setItem('lofi-music-volume', restoreVol.toString());

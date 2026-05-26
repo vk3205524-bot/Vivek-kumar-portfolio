@@ -190,7 +190,7 @@ export default function LofiPlayer() {
             {/* Track metadata */}
             <div className="flex flex-col gap-0.5 select-none overflow-hidden max-w-[120px]">
               <span className="text-[10px] font-mono tracking-widest text-cyber-cyan uppercase font-bold leading-none">
-                Lofi Ambient
+                Pop Vibes
               </span>
               <span className="text-[9px] text-white/40 truncate font-sans">
                 {isPlaying ? 'tuning in...' : 'muted/paused'}
@@ -256,7 +256,7 @@ export default function LofiPlayer() {
               exit={{ opacity: 0, scale: 0.8, x: -10 }}
               className="px-2.5 py-1 rounded-md glass text-[8px] font-mono tracking-wider text-cyber-cyan border border-cyber-cyan/10 uppercase select-none pointer-events-none whitespace-nowrap shadow-glow-cyan/5"
             >
-              {isPlaying ? 'LOFI PLAYING' : 'LOFI OFF'}
+              {isPlaying ? 'MUSIC PLAYING' : 'MUSIC OFF'}
             </motion.div>
           )}
         </AnimatePresence>

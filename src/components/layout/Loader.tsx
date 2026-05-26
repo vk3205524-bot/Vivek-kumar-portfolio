@@ -7,7 +7,6 @@ import { useStore } from '@/stores/useStore';
 export default function Loader() {
   const { isLoaded, setLoaded } = useStore();
   const [progress, setProgress] = useState(0);
-  const [showEnterButton, setShowEnterButton] = useState(false);
 
   useEffect(() => {
     /* Simulated loading progress */
@@ -15,7 +14,7 @@ export default function Loader() {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setShowEnterButton(true);
+          setTimeout(() => setLoaded(true), 400);
           return 100;
         }
         return prev + Math.random() * 15 + 5;
@@ -23,7 +22,7 @@ export default function Loader() {
     }, 120);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [setLoaded]);
 
   return (
     <AnimatePresence>
@@ -54,51 +53,23 @@ export default function Loader() {
             </motion.div>
           </div>
 
-          {/* Interactive Transition Area */}
-          <div className="h-16 flex items-center justify-center">
-            <AnimatePresence mode="wait">
-              {!showEnterButton ? (
-                <motion.div
-                  key="progress-deck"
-                  initial={{ opacity: 1 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.4 }}
-                  className="flex flex-col items-center gap-4"
-                >
-                  {/* Progress bar */}
-                  <div className="w-48 h-[2px] bg-white/10 rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-cyber-cyan to-cyber-purple"
-                      style={{ width: `${Math.min(progress, 100)}%` }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </div>
+          {/* Progress bar */}
+          <div className="w-48 h-[2px] bg-white/10 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-cyber-cyan to-cyber-purple"
+              style={{ width: `${Math.min(progress, 100)}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
 
-                  {/* Loading text */}
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-mono text-white/30 tracking-widest uppercase">
-                      Initializing
-                    </span>
-                    <span className="text-xs font-mono text-cyber-cyan">
-                      {Math.min(Math.round(progress), 100)}%
-                    </span>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.button
-                  key="enter-button"
-                  onClick={() => setLoaded(true)}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(0, 240, 255, 0.4)" }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className="px-8 py-3 rounded-full border border-cyber-cyan text-cyber-cyan text-xs font-display font-semibold tracking-[0.2em] uppercase hover:bg-cyber-cyan hover:text-black transition-colors duration-300 shadow-glow-cyan pointer-events-auto"
-                >
-                  Enter Portfolio
-                </motion.button>
-              )}
-            </AnimatePresence>
+          {/* Loading text */}
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono text-white/30 tracking-widest uppercase">
+              Initializing
+            </span>
+            <span className="text-xs font-mono text-cyber-cyan">
+              {Math.min(Math.round(progress), 100)}%
+            </span>
           </div>
         </motion.div>
       )}

@@ -112,6 +112,13 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    title: 'InvoiceFlow AI',
+    description: 'AI-powered platform to create professional invoices in seconds. Features a modern interface designed for rapid invoice generation.',
+    tags: ['Next.js', 'AI', 'SaaS', 'Web App'],
+    link: 'https://invoice-delta-ochre.vercel.app/',
+    featured: true,
+  },
+  {
     title: 'DineSync',
     description: 'A comprehensive SaaS hotel and restaurant management platform that synchronizes every table, order, and analytical insight in real-time. Designed with modern branding and deployed live.',
     tags: ['Next.js', 'Firebase', 'SVG Branding', 'Real-time Analytics'],
